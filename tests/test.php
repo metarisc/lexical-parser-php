@@ -3,7 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use PhpZip\ZipFile;
-use App\Converter\Converter;
+use Metarisc\LexicalParser\Converter\Converter;
 
 // Ensure the file path is correct
 const odtPath = __DIR__.'/../tests/template.odt';

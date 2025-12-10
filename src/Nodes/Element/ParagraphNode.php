@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Nodes\Element;
+namespace Metarisc\LexicalParser\Nodes\Element;
 
-use App\Nodes\Styles\Style;
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Nodes\Styles\Style;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class ParagraphNode extends ElementNode
 {
@@ -18,7 +18,7 @@ class ParagraphNode extends ElementNode
         $this->style     = new Style($data, self::TYPE);
     }
 
-    public function accept(RenderrerInterface $visitor) : string
+    public function accept(RendererInterface $visitor) : string
     {
         return $visitor->visitParagraph($this);
     }

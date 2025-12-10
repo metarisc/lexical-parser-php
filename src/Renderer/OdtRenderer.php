@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Renderrer;
+namespace Metarisc\LexicalParser\Renderer;
 
-use App\Odt;
-use App\Nodes\RootNode;
-use App\Nodes\Styles\Style;
-use App\Nodes\LineBreakNode;
-use App\Nodes\NodeInterface;
-use App\Nodes\Element\ImageNode;
-use App\Nodes\Styles\TextFormat;
-use App\Nodes\Element\HeadingNode;
-use App\Nodes\Element\List\ListNode;
-use App\Nodes\Element\ParagraphNode;
-use App\Nodes\Element\Text\LinkNode;
-use App\Nodes\Element\Text\TextNode;
-use App\Nodes\Element\Table\TableNode;
-use App\Nodes\Element\List\ListItemNode;
-use App\Nodes\Element\Table\TableRowNode;
-use App\Nodes\Element\Table\TableCellNode;
+use Metarisc\LexicalParser\Odt;
+use Metarisc\LexicalParser\Nodes\RootNode;
+use Metarisc\LexicalParser\Nodes\Styles\Style;
+use Metarisc\LexicalParser\Nodes\LineBreakNode;
+use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Nodes\Element\ImageNode;
+use Metarisc\LexicalParser\Nodes\Styles\TextFormat;
+use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
+use Metarisc\LexicalParser\Nodes\Element\List\ListNode;
+use Metarisc\LexicalParser\Nodes\Element\ParagraphNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\LinkNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\TextNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableNode;
+use Metarisc\LexicalParser\Nodes\Element\List\ListItemNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableRowNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableCellNode;
 
 /**
  * Visitor pour convertir les nodes Lexical en fragments XML ODT
  * Génère uniquement le XML des éléments individuels (sans enveloppe document).
  */
-final class OdtRenderrer implements RenderrerInterface
+final class OdtRenderer implements RendererInterface
 {
     private Odt $odt;
     /** @var array<string, array<string, mixed>>

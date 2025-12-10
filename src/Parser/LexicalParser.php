@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Parser;
+namespace Metarisc\LexicalParser\Parser;
 
-use App\Nodes\RootNode;
-use App\Nodes\LineBreakNode;
-use App\Nodes\NodeInterface;
-use App\Nodes\Element\ImageNode;
-use App\Nodes\Element\HeadingNode;
-use App\Nodes\Element\List\ListNode;
-use App\Nodes\Element\ParagraphNode;
-use App\Nodes\Element\Text\LinkNode;
-use App\Nodes\Element\Text\TextNode;
-use App\Renderrer\RenderrerInterface;
-use App\Nodes\Element\Table\TableNode;
-use App\Nodes\Element\List\ListItemNode;
-use App\Nodes\Element\Table\TableRowNode;
-use App\Nodes\Element\Table\TableCellNode;
+use Metarisc\LexicalParser\Nodes\RootNode;
+use Metarisc\LexicalParser\Nodes\LineBreakNode;
+use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Nodes\Element\ImageNode;
+use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
+use Metarisc\LexicalParser\Nodes\Element\List\ListNode;
+use Metarisc\LexicalParser\Nodes\Element\ParagraphNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\LinkNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\TextNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableNode;
+use Metarisc\LexicalParser\Nodes\Element\List\ListItemNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableRowNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableCellNode;
 
 /**
  * Parser pour convertir du JSON Lexical en arbre de Nodes PHP
@@ -23,11 +23,11 @@ use App\Nodes\Element\Table\TableCellNode;
  */
 final class LexicalParser implements ParserInterface
 {
-    private RenderrerInterface $renderrer;
+    private RendererInterface $renderer;
 
-    public function setRenderrer(RenderrerInterface $renderrer) : void
+    public function setRenderer(RendererInterface $renderer) : void
     {
-        $this->renderrer = $renderrer;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -39,7 +39,7 @@ final class LexicalParser implements ParserInterface
     public function parseAndRender(string $json) : string
     {
         $rootNode = $this->parseJson($json);
-        $content  = $rootNode->accept($this->renderrer);
+        $content  = $rootNode->accept($this->renderer);
 
         return $content;
     }

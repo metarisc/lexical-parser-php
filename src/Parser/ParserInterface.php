@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Parser;
+namespace Metarisc\LexicalParser\Parser;
 
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 interface ParserInterface
 {
     public function parseAndRender(string $json) : string;
 
-    public function setRenderrer(RenderrerInterface $renderrer) : void;
+    public function setRenderer(RendererInterface $renderer) : void;
 }

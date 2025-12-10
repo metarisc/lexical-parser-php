@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Nodes\Element\Text;
+namespace Metarisc\LexicalParser\Nodes\Element\Text;
 
-use App\Nodes\Styles\Style;
-use App\Nodes\NodeInterface;
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Nodes\Styles\Style;
+use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class TextNode implements NodeInterface
 {
@@ -18,7 +18,7 @@ class TextNode implements NodeInterface
         $this->style = new Style($data, self::TYPE);
     }
 
-    public function accept(RenderrerInterface $visitor) : string
+    public function accept(RendererInterface $visitor) : string
     {
         return $visitor->visitText($this);
     }

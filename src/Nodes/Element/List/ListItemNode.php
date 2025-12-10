@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Nodes\Element\List;
+namespace Metarisc\LexicalParser\Nodes\Element\List;
 
-use App\Nodes\Styles\Style;
-use App\Nodes\Element\ElementNode;
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Nodes\Styles\Style;
+use Metarisc\LexicalParser\Nodes\Element\ElementNode;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class ListItemNode extends ElementNode
 {
@@ -17,7 +17,7 @@ class ListItemNode extends ElementNode
         $this->style     = new Style($data, self::TYPE);
     }
 
-    public function accept(RenderrerInterface $visitor) : string
+    public function accept(RendererInterface $visitor) : string
     {
         return $visitor->visitListItem($this);
     }

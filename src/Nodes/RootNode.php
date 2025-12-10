@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Nodes;
+namespace Metarisc\LexicalParser\Nodes;
 
-use App\Nodes\Element\ElementNode;
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Nodes\Element\ElementNode;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class RootNode extends ElementNode
 {
     private const TYPE = 'root';
 
-    public function accept(RenderrerInterface $visitor) : string
+    public function accept(RendererInterface $visitor) : string
     {
         return $visitor->visitRoot($this);
     }

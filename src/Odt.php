@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Metarisc\LexicalParser;
 
 use PhpZip\ZipFile as Zip;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Converter;
+namespace Metarisc\LexicalParser\Converter;
 
 interface ConverterInterface
 {

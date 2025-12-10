@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Nodes\Element;
+namespace Metarisc\LexicalParser\Nodes\Element;
 
-use App\Nodes\Styles\Style;
-use App\Nodes\NodeInterface;
-use App\Renderrer\RenderrerInterface;
+use Metarisc\LexicalParser\Nodes\Styles\Style;
+use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 /**
  * Classe de base abstraite pour tous les nodes Lexical
@@ -18,7 +18,7 @@ abstract class ElementNode implements NodeInterface
     /**
      * Accepte un visitor (pattern Visitor).
      */
-    abstract public function accept(RenderrerInterface $visitor) : string;
+    abstract public function accept(RendererInterface $visitor) : string;
 
     /**
      * Retourne les enfants du node.

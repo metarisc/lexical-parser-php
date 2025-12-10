@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Converter;
+namespace Metarisc\LexicalParser\Converter;
 
-use App\Parser\LexicalParser;
-use App\Parser\ParserInterface;
-use App\Renderrer\OdtRenderrer;
+use Metarisc\LexicalParser\Parser\LexicalParser;
+use Metarisc\LexicalParser\Renderer\OdtRenderer;
+use Metarisc\LexicalParser\Parser\ParserInterface;
 
 class Converter implements ConverterInterface
 {
@@ -18,15 +18,15 @@ class Converter implements ConverterInterface
     public function convert(string $json_ast, array $config) : string
     {
         match ($config['output_format']) {
-            'odt' => $renderrer   = new OdtRenderrer(),
-            default => $renderrer = null,
+            'odt' => $renderer   = new OdtRenderer(),
+            default => $renderer = null,
         };
 
-        if (!$renderrer) {
+        if (!$renderer) {
             throw new \InvalidArgumentException('Unsupported output format: '.$config['output_format']);
         }
 
-        $this->parser->setRenderrer($renderrer);
+        $this->parser->setRenderer($renderer);
 
         $content = $this->parser->parseAndRender($json_ast);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Nodes\Styles;
+namespace Metarisc\LexicalParser\Nodes\Styles;
 
 enum ListFormat : string
 {

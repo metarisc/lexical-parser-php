@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Renderrer;
+namespace Metarisc\LexicalParser\Renderer;
 
-use App\Nodes\RootNode;
-use App\Nodes\LineBreakNode;
-use App\Nodes\Element\ImageNode;
-use App\Nodes\Element\HeadingNode;
-use App\Nodes\Element\List\ListNode;
-use App\Nodes\Element\ParagraphNode;
-use App\Nodes\Element\Text\LinkNode;
-use App\Nodes\Element\Text\TextNode;
-use App\Nodes\Element\Table\TableNode;
-use App\Nodes\Element\List\ListItemNode;
-use App\Nodes\Element\Table\TableRowNode;
-use App\Nodes\Element\Table\TableCellNode;
+use Metarisc\LexicalParser\Nodes\RootNode;
+use Metarisc\LexicalParser\Nodes\LineBreakNode;
+use Metarisc\LexicalParser\Nodes\Element\ImageNode;
+use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
+use Metarisc\LexicalParser\Nodes\Element\List\ListNode;
+use Metarisc\LexicalParser\Nodes\Element\ParagraphNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\LinkNode;
+use Metarisc\LexicalParser\Nodes\Element\Text\TextNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableNode;
+use Metarisc\LexicalParser\Nodes\Element\List\ListItemNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableRowNode;
+use Metarisc\LexicalParser\Nodes\Element\Table\TableCellNode;
 
 /**
  * Interface pour le pattern Visitor
  * Permet de parcourir et traiter l'arbre de nodes Lexical.
  */
-interface RenderrerInterface
+interface RendererInterface
 {
     public function visitRoot(RootNode $node) : string;
 
