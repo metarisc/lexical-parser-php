@@ -1,5 +1,5 @@
 {
-    "name": "metarisc/lexical-parser-php",
+    "name": "metarisc/lexical-parser",
     "type": "library",
     "autoload": {
         "psr-4": {
