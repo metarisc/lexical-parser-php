@@ -1,0 +1,15 @@
+{
+    "name": "Metarisc Lexical to ODT",
+    "dockerComposeFile": "../docker-compose.yaml",
+    "service": "lexical-to-odt",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "root",
+    "forwardPorts": [8002],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client"
+            ]
+        }
+    }
+}
