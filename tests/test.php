@@ -7,7 +7,7 @@ use Metarisc\LexicalParser\Converter\Converter;
 
 // Ensure the file path is correct
 const odtPath = __DIR__.'/../tests/template.odt';
-const astPath = __DIR__.'/../docs/lexical_ast_pv.json';
+const astPath = __DIR__.'/../docs/lexical_ast_exemple_pagebreak.json';
 const rawPath = __DIR__.'/../tests/raw.xml';
 
 if (!file_exists(odtPath)) {

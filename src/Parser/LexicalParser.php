@@ -5,6 +5,7 @@ namespace Metarisc\LexicalParser\Parser;
 use Metarisc\LexicalParser\Nodes\RootNode;
 use Metarisc\LexicalParser\Nodes\LineBreakNode;
 use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Nodes\PageBreakNode;
 use Metarisc\LexicalParser\Nodes\Element\ImageNode;
 use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
 use Metarisc\LexicalParser\Renderer\RendererInterface;
@@ -101,7 +102,9 @@ final class LexicalParser implements ParserInterface
             'tablecell' => new TableCellNode($data),
             'image' => new ImageNode($data),
             'linebreak' => new LineBreakNode(),
-            default => throw new \InvalidArgumentException("Type de node non supporté : {$type}"),
+            'page-break' => new PageBreakNode(),
+            // default => throw new \InvalidArgumentException("Type de node non supporté : {$type}"),
+            default => new ParagraphNode([]),
         };
 
         // Traiter récursivement les enfants si présents

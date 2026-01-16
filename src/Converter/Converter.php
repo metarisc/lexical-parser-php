@@ -29,6 +29,7 @@ class Converter implements ConverterInterface
         $this->parser->setRenderer($renderer);
 
         $content = $this->parser->parseAndRender($json_ast);
+        echo $content;
 
         return $content;
     }

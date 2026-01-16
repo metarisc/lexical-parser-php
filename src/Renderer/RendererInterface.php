@@ -4,6 +4,7 @@ namespace Metarisc\LexicalParser\Renderer;
 
 use Metarisc\LexicalParser\Nodes\RootNode;
 use Metarisc\LexicalParser\Nodes\LineBreakNode;
+use Metarisc\LexicalParser\Nodes\PageBreakNode;
 use Metarisc\LexicalParser\Nodes\Element\ImageNode;
 use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
 use Metarisc\LexicalParser\Nodes\Element\List\ListNode;
@@ -44,4 +45,6 @@ interface RendererInterface
     public function visitImage(ImageNode $node) : string;
 
     public function visitLineBreak(LineBreakNode $node) : string;
+
+    public function visitPageBreak(PageBreakNode $node) : string;
 }

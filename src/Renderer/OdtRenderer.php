@@ -7,6 +7,7 @@ use Metarisc\LexicalParser\Nodes\RootNode;
 use Metarisc\LexicalParser\Nodes\Styles\Style;
 use Metarisc\LexicalParser\Nodes\LineBreakNode;
 use Metarisc\LexicalParser\Nodes\NodeInterface;
+use Metarisc\LexicalParser\Nodes\PageBreakNode;
 use Metarisc\LexicalParser\Nodes\Element\ImageNode;
 use Metarisc\LexicalParser\Nodes\Styles\TextFormat;
 use Metarisc\LexicalParser\Nodes\Element\HeadingNode;
@@ -61,6 +62,7 @@ final class OdtRenderer implements RendererInterface
                 || $child instanceof HeadingNode
                 || $child instanceof ListNode
                 || $child instanceof TableNode
+                || $child instanceof PageBreakNode
             ) {
                 $content .= $child->accept($this);
             }
@@ -98,12 +100,12 @@ final class OdtRenderer implements RendererInterface
         $tag = $node->getTag() ?? 'h1';
 
         // Extraire le niveau du heading (h1 -> 1, h2 -> 2, etc.)
-        $level = (int) preg_replace('/[^0-9]/', '', $tag);
-        if ($level < 1) {
-            $level = 1;
+        $headingLevel = (int) preg_replace('/[^0-9]/', '', $tag);
+        if ($headingLevel < 1) {
+            $headingLevel = 1;
         }
-        if ($level > 6) {
-            $level = 6;
+        if ($headingLevel > 4) {
+            $headingLevel = 4;
         }
 
         // Construire le contenu du heading en visitant les enfants
@@ -114,13 +116,13 @@ final class OdtRenderer implements RendererInterface
 
         // Si le heading a un alignement, créer un style et l'appliquer
         if ($this->hasParagraphStyle($style)) {
-            $styleName = $this->generateParagraphStyle($style, 'heading', $level);
+            $styleName = $this->generateParagraphStyle($style, 'heading', $headingLevel);
 
-            return '<text:h text:outline-level="'.$level.'" text:style-name="'.$styleName.'">'.$content.'</text:h>';
+            return '<text:h text:style-name="'.$styleName.'" text:outline-level="'.$headingLevel.'">'.$content.'</text:h>';
         }
 
         // Créer le heading avec son niveau
-        $heading = '<text:h text:outline-level="'.$level.'">'.$content.'</text:h>';
+        $heading = '<text:h text:outline-level="'.$headingLevel.'">'.$content.'</text:h>';
 
         return $heading;
     }
@@ -256,7 +258,15 @@ final class OdtRenderer implements RendererInterface
             $content = '<text:p/>';
         }
 
-        $tableCell = '<table:table-cell table:style-name="Table1.A1" '.$attributes.'>'.$content.'</table:table-cell>';
+        // Gérer le backgroundColor de la cellule
+        $style = $node->getStyle();
+        $styleName = 'Table1.A1';
+        
+        if ($style && !empty($style->backgroundColor)) {
+            $styleName = $this->generateTableCellStyle($style);
+        }
+
+        $tableCell = '<table:table-cell table:style-name="'.$styleName.'" '.$attributes.'>'.$content.'</table:table-cell>';
 
         return $tableCell;
     }
@@ -264,6 +274,14 @@ final class OdtRenderer implements RendererInterface
     public function visitLineBreak(LineBreakNode $node) : string
     {
         return '<text:line-break />';
+    }
+
+    public function visitPageBreak(PageBreakNode $node) : string
+    {
+        // En ODT, un page-break doit être dans un paragraphe avec un style qui définit fo:break-before="page"
+        // On crée un style automatique si nécessaire
+        $styleName = $this->getOrCreatePageBreakStyle();
+        return '<text:p text:style-name="'.$styleName.'"/>';
     }
 
     /** @param array<NodeInterface> $nodes */
@@ -378,16 +396,17 @@ final class OdtRenderer implements RendererInterface
             return false;
         }
 
-        return null !== $style->alignment;
+        return null !== $style->alignment
+            || !empty($style->backgroundColor);
     }
 
     /**
      * Génère un style automatique pour un paragraphe/heading et retourne son nom.
      */
-    private function generateParagraphStyle(Style $style, string $type = 'paragraph', int $level = 0) : string
+    private function generateParagraphStyle(Style $style, string $type = 'paragraph', int $headingLevel = 0) : string
     {
         // Créer une signature unique basée sur les propriétés du style
-        $signature = 'para:'.$type.':'.$level.':'.$this->getParagraphStyleSignature($style);
+        $signature = 'para:'.$type.':'.$headingLevel.':'.$this->getParagraphStyleSignature($style);
 
         // Si ce style existe déjà, retourner son nom
         if (isset($this->automaticStyles[$signature])) {
@@ -397,25 +416,43 @@ final class OdtRenderer implements RendererInterface
         // Générer un nouveau nom de style
         $styleName = 'P'.$this->styleCounter++;
 
-        // Construire les propriétés du style
-        $properties = [];
+        // Construire les propriétés du paragraphe
+        $paragraphProperties = [];
 
         if (null !== $style->alignment) {
-            $properties['fo:text-align'] = $style->alignment->value;
+            $paragraphProperties['fo:text-align'] = $style->alignment->value;
         }
 
-        // Pour les headings, utiliser "Heading" comme parent style de base
-        $parentStyle = null;
+        if (!empty($style->backgroundColor)) {
+            $paragraphProperties['fo:background-color'] = $style->backgroundColor;
+        }
+
+        // Pour les headings, ajouter des propriétés de texte pour simuler un titre
+        $textProperties = [];
         if ('heading' === $type) {
-            $parentStyle = 'Heading';
+            // Définir les tailles de police standard pour chaque niveau de heading
+            $fontSizes = [
+                1 => '18pt',
+                2 => '16pt',
+                3 => '14pt',
+                4 => '12pt',
+            ];
+            
+            if (isset($fontSizes[$headingLevel])) {
+                $textProperties['fo:font-size'] = $fontSizes[$headingLevel];
+            }
+            
+            // Mettre en gras par défaut
+            $textProperties['fo:font-weight'] = 'bold';
         }
 
         // Stocker le style
         $this->automaticStyles[$signature] = [
             'name' => $styleName,
             'family' => 'paragraph',
-            'parent' => $parentStyle,
-            'properties' => $properties,
+            'parent' => null,
+            'properties' => $paragraphProperties,
+            'textProperties' => $textProperties,
         ];
 
         return $styleName;
@@ -430,6 +467,87 @@ final class OdtRenderer implements RendererInterface
 
         if (null !== $style->alignment) {
             $parts[] = 'align:'.$style->alignment->value;
+        }
+
+        if (!empty($style->backgroundColor)) {
+            $parts[] = 'bg:'.$style->backgroundColor;
+        }
+
+        return implode('|', $parts);
+    }
+
+    /**
+     * Obtient ou crée le style pour les page breaks.
+     */
+    private function getOrCreatePageBreakStyle() : string
+    {
+        $signature = 'pagebreak:style';
+
+        // Si ce style existe déjà, retourner son nom
+        if (isset($this->automaticStyles[$signature])) {
+            return $this->automaticStyles[$signature]['name'];
+        }
+
+        // Générer un nouveau nom de style
+        $styleName = 'P'.$this->styleCounter++;
+
+        // Stocker le style avec la propriété fo:break-before="page"
+        $this->automaticStyles[$signature] = [
+            'name' => $styleName,
+            'family' => 'paragraph',
+            'parent' => null,
+            'properties' => ['fo:break-before' => 'page'],
+        ];
+
+        return $styleName;
+    }
+
+    /**
+     * Génère un style automatique pour une cellule de tableau et retourne son nom.
+     */
+    private function generateTableCellStyle(Style $style) : string
+    {
+        // Créer une signature unique basée sur les propriétés du style
+        $signature = 'tablecell:'.$this->getTableCellStyleSignature($style);
+
+        // Si ce style existe déjà, retourner son nom
+        if (isset($this->automaticStyles[$signature])) {
+            return $this->automaticStyles[$signature]['name'];
+        }
+
+        // Générer un nouveau nom de style
+        $styleName = 'TC'.$this->styleCounter++;
+
+        // Construire les propriétés de la cellule
+        $properties = [
+            'fo:padding' => '0.097cm',
+            'fo:border' => '0.5pt solid #000000',
+        ];
+
+        if (!empty($style->backgroundColor)) {
+            $properties['fo:background-color'] = $style->backgroundColor;
+        }
+
+        // Stocker le style
+        $this->automaticStyles[$signature] = [
+            'name' => $styleName,
+            'family' => 'table-cell',
+            'parent' => null,
+            'properties' => $properties,
+        ];
+
+        return $styleName;
+    }
+
+    /**
+     * Crée une signature unique pour un style de cellule de tableau basée sur ses propriétés.
+     */
+    private function getTableCellStyleSignature(Style $style) : string
+    {
+        $parts = [];
+
+        if (!empty($style->backgroundColor)) {
+            $parts[] = 'bg:'.$style->backgroundColor;
         }
 
         return implode('|', $parts);

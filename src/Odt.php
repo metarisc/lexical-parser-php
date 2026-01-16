@@ -77,15 +77,35 @@ final class Odt extends Zip
             // Déterminer le type de propriétés selon la famille
             if ('text' === $styleData['family']) {
                 $styleXml .= '<style:text-properties';
+                foreach ($styleData['properties'] as $prop => $value) {
+                    $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                }
+                $styleXml .= '/>';
             } elseif ('paragraph' === $styleData['family']) {
+                // Ajouter les propriétés de paragraphe
                 $styleXml .= '<style:paragraph-properties';
+                foreach ($styleData['properties'] as $prop => $value) {
+                    $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                }
+                $styleXml .= '/>';
+                
+                // Ajouter les propriétés de texte si elles existent (pour les headings)
+                if (isset($styleData['textProperties']) && !empty($styleData['textProperties'])) {
+                    $styleXml .= '<style:text-properties';
+                    foreach ($styleData['textProperties'] as $prop => $value) {
+                        $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                    }
+                    $styleXml .= '/>';
+                }
+            } elseif ('table-cell' === $styleData['family']) {
+                // Ajouter les propriétés de cellule de tableau
+                $styleXml .= '<style:table-cell-properties';
+                foreach ($styleData['properties'] as $prop => $value) {
+                    $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                }
+                $styleXml .= '/>';
             }
 
-            foreach ($styleData['properties'] as $prop => $value) {
-                $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
-            }
-
-            $styleXml .= '/>';
             $styleXml .= '</style:style>';
 
             // Ajouter le style au document via la méthode existante
