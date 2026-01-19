@@ -64,6 +64,12 @@ final class Odt extends Zip
     {
         $styleXml = '<office:automatic-styles>';
         foreach ($styles as $styleData) {
+            // Gérer les styles de liste séparément
+            if (isset($styleData['type']) && 'list' === $styleData['type']) {
+                $styleXml .= $this->generateListStyle($styleData);
+                continue;
+            }
+
             // Construire le XML du style
             $styleXml .= '<style:style style:name="'.$styleData['name'].'" style:family="'.$styleData['family'].'"';
 
@@ -112,5 +118,53 @@ final class Odt extends Zip
         }
         $styleXml .= '</office:automatic-styles>';
         $this->addNodeToXml($styleXml);
+    }
+
+    /**
+     * Génère le XML pour un style de liste.
+     *
+     * @param array $styleData Données du style de liste
+     */
+    private function generateListStyle(array $styleData) : string
+    {
+        $styleName = $styleData['name'];
+        $levels    = $styleData['levels'] ?? [];
+
+        $xml = '<text:list-style style:name="'.$styleName.'">';
+
+        foreach ($levels as $level => $levelData) {
+            $bulletChar = $levelData['bullet-char'] ?? '';
+            $numFormat  = $levelData['num-format'] ?? '';
+
+            if (!empty($bulletChar)) {
+                // Liste à puces ou avec caractère spécial
+                $xml .= '<text:list-level-style-bullet text:level="'.$level.'" text:bullet-char="'.htmlspecialchars($bulletChar, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'">';
+                $xml .= '<style:list-level-properties text:list-level-position-and-space-mode="label-alignment">';
+                $xml .= '<style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-0.635cm" fo:margin-left="1.27cm"/>';
+                $xml .= '</style:list-level-properties>';
+                $xml .= '</text:list-level-style-bullet>';
+            } elseif (!empty($numFormat)) {
+                // Liste numérotée
+                $numPrefix = $levelData['num-prefix'] ?? '';
+                $numSuffix = $levelData['num-suffix'] ?? '.';
+
+                $xml .= '<text:list-level-style-number text:level="'.$level.'" text:display-levels="1" style:num-format="'.$numFormat.'"';
+                if (!empty($numPrefix)) {
+                    $xml .= ' style:num-prefix="'.htmlspecialchars($numPrefix, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                }
+                if (!empty($numSuffix)) {
+                    $xml .= ' style:num-suffix="'.htmlspecialchars($numSuffix, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
+                }
+                $xml .= '>';
+                $xml .= '<style:list-level-properties text:list-level-position-and-space-mode="label-alignment">';
+                $xml .= '<style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-0.635cm" fo:margin-left="1.27cm"/>';
+                $xml .= '</style:list-level-properties>';
+                $xml .= '</text:list-level-style-number>';
+            }
+        }
+
+        $xml .= '</text:list-style>';
+
+        return $xml;
     }
 }

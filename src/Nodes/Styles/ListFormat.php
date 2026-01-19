@@ -6,14 +6,14 @@ enum ListFormat : string
 {
     case BULLET   = 'bullet';
     case NUMBERED = 'numbered';
-    case CHECKBOX = 'checkbox';
+    case CHECK    = 'check';
 
     public static function fromString(string $value) : ?self
     {
         return match (mb_strtolower($value)) {
             'bullet' => self::BULLET,
-            'numbered' => self::NUMBERED,
-            'checkbox' => self::CHECKBOX,
+            'number', 'numbered' => self::NUMBERED,
+            'check' => self::CHECK,
             default => null,
         };
     }

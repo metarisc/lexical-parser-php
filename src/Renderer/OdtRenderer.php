@@ -38,6 +38,51 @@ final class OdtRenderer implements RendererInterface
     public function __construct()
     {
         $this->odt = new Odt();
+        $this->initializeListStyles();
+    }
+
+    /**
+     * Initialise les styles de liste prédéfinis.
+     */
+    private function initializeListStyles() : void
+    {
+        // Style L1 : Liste à puces (bullet)
+        $this->automaticStyles['L1'] = [
+            'name' => 'L1',
+            'type' => 'list',
+            'levels' => [
+                1 => [
+                    'bullet-char' => '•',
+                    'num-format' => '',
+                ],
+            ],
+        ];
+
+        // Style L2 : Liste numérotée (numbered)
+        $this->automaticStyles['L2'] = [
+            'name' => 'L2',
+            'type' => 'list',
+            'levels' => [
+                1 => [
+                    'bullet-char' => '',
+                    'num-format' => '1',
+                    'num-suffix' => '.',
+                    'num-prefix' => '',
+                ],
+            ],
+        ];
+
+        // Style L3 : Liste avec cases à cocher (check)
+        $this->automaticStyles['L3'] = [
+            'name' => 'L3',
+            'type' => 'list',
+            'levels' => [
+                1 => [
+                    'bullet-char' => '☐',
+                    'num-format' => '',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -169,10 +214,32 @@ final class OdtRenderer implements RendererInterface
         // Construire les items de la list en visitant les enfants
         $content = $this->traverseChildren($node->getChildren());
 
+        // Déterminer le style de liste selon le ListFormat
+        $listStyle = $this->getListStyleName($node);
+
         // Créer la list avec ses items
-        $list = '<text:list>'.$content.'</text:list>';
+        $list = '<text:list text:style-name="'.$listStyle.'">'.$content.'</text:list>';
 
         return $list;
+    }
+
+    /**
+     * Détermine le nom du style de liste selon le format.
+     */
+    private function getListStyleName(ListNode $node) : string
+    {
+        $style = $node->getStyle();
+        if (null === $style || null === $style->listFormat) {
+            // Par défaut, liste à puces
+            return 'L1';
+        }
+
+        return match ($style->listFormat) {
+            \Metarisc\LexicalParser\Nodes\Styles\ListFormat::NUMBERED => 'L2',  // Liste numérotée
+            \Metarisc\LexicalParser\Nodes\Styles\ListFormat::CHECK => 'L3',     // Liste avec cases à cocher
+            \Metarisc\LexicalParser\Nodes\Styles\ListFormat::BULLET => 'L1',    // Liste à puces
+            default => 'L1',
+        };
     }
 
     public function visitListItem(ListItemNode $node) : string
