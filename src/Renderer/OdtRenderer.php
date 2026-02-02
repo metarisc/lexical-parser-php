@@ -390,7 +390,7 @@ final class OdtRenderer implements RendererInterface
         }
 
         // Générer un nouveau nom de style
-        $styleName = 'T'.$this->styleCounter++;
+        $styleName = 'TE'.$this->styleCounter++;
 
         // Construire les propriétés du style
         $properties = [];
@@ -481,7 +481,7 @@ final class OdtRenderer implements RendererInterface
         }
 
         // Générer un nouveau nom de style
-        $styleName = 'P'.$this->styleCounter++;
+        $styleName = 'PA'.$this->styleCounter++;
 
         // Construire les propriétés du paragraphe
         $paragraphProperties = [];
@@ -556,7 +556,7 @@ final class OdtRenderer implements RendererInterface
         }
 
         // Générer un nouveau nom de style
-        $styleName = 'P'.$this->styleCounter++;
+        $styleName = 'PA'.$this->styleCounter++;
 
         // Stocker le style avec la propriété fo:break-before="page"
         $this->automaticStyles[$signature] = [
