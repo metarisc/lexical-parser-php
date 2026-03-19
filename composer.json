@@ -1,21 +1,29 @@
 {
     "name": "metarisc/lexical-parser",
-    "type": "library",
+
+    "description": "A lexical parser.",
+
     "autoload": {
         "psr-4": {
             "Metarisc\\LexicalParser\\": "src/"
         }
     },
+    
     "require": {
         "nelexa/zip": "^4.0"
     },
+    
     "require-dev": {
         "kdubuc/php-cs-fixer-rules": "^1.0",
         "symfony/var-dumper": "^7.1",
         "vimeo/psalm": "^5.26"
     },
+    
     "scripts": {
         "fix-cs": "php vendor/bin/php-cs-fixer fix --config=vendor/kdubuc/php-cs-fixer-rules/php-cs-fixer.php",
         "analyze": "php vendor/bin/psalm --no-cache"
-    }
+    },
+
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
