@@ -9,7 +9,7 @@ class ParagraphNode extends ElementNode
 {
     private ?int $indent;
     private ?string $direction;
-    private const string TYPE = 'paragraph';
+    private const TYPE = 'paragraph';
 
     public function __construct(array $data)
     {

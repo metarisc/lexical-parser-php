@@ -64,7 +64,7 @@ class Style
         $map = array_map('trim', explode(';', $value));
 
         // Example: ['color: #00000', 'background: #ffffff'] -> ['color' => '#00000', 'background' => '#ffffff']
-        $parsed = array_map(function ($item) {
+        $parsed = array_map(static function ($item) {
             $parts = explode(':', $item, 2);
             if (2 === \count($parts)) {
                 return [trim($parts[0]) => trim($parts[1])];

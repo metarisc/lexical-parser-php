@@ -7,7 +7,7 @@ use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class ImageNode extends ElementNode
 {
-    private const string TYPE = 'image';
+    private const TYPE = 'image';
     private ?string $src;
     private ?string $altText;
     private ?int $width;

@@ -94,7 +94,7 @@ final class Odt extends Zip
                     $styleXml .= ' '.$prop.'="'.htmlspecialchars($value, \ENT_XML1 | \ENT_QUOTES, 'UTF-8').'"';
                 }
                 $styleXml .= '/>';
-                
+
                 // Ajouter les propriétés de texte si elles existent (pour les headings)
                 if (isset($styleData['textProperties']) && !empty($styleData['textProperties'])) {
                     $styleXml .= '<style:text-properties';

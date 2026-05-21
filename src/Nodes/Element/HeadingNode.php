@@ -7,7 +7,7 @@ use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class HeadingNode extends ElementNode
 {
-    private const string TYPE = 'heading';
+    private const TYPE        = 'heading';
     private ?string $tag      = null;
 
     public function __construct(array $data = [])

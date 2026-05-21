@@ -326,9 +326,9 @@ final class OdtRenderer implements RendererInterface
         }
 
         // Gérer le backgroundColor de la cellule
-        $style = $node->getStyle();
+        $style     = $node->getStyle();
         $styleName = 'Table1.A1';
-        
+
         if ($style && !empty($style->backgroundColor)) {
             $styleName = $this->generateTableCellStyle($style);
         }
@@ -348,6 +348,7 @@ final class OdtRenderer implements RendererInterface
         // En ODT, un page-break doit être dans un paragraphe avec un style qui définit fo:break-before="page"
         // On crée un style automatique si nécessaire
         $styleName = $this->getOrCreatePageBreakStyle();
+
         return '<text:p text:style-name="'.$styleName.'"/>';
     }
 
@@ -438,7 +439,7 @@ final class OdtRenderer implements RendererInterface
         $parts = [];
 
         if (!empty($style->textFormats)) {
-            $formats = array_map(fn ($f) => $f->value, $style->textFormats);
+            $formats = array_map(static fn ($f) => $f->value, $style->textFormats);
             sort($formats);
             $parts[] = 'f:'.implode(',', $formats);
         }
@@ -504,11 +505,11 @@ final class OdtRenderer implements RendererInterface
                 3 => '14pt',
                 4 => '12pt',
             ];
-            
+
             if (isset($fontSizes[$headingLevel])) {
                 $textProperties['fo:font-size'] = $fontSizes[$headingLevel];
             }
-            
+
             // Mettre en gras par défaut
             $textProperties['fo:font-weight'] = 'bold';
         }

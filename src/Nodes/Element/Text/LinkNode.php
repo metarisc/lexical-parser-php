@@ -8,7 +8,7 @@ use Metarisc\LexicalParser\Renderer\RendererInterface;
 
 class LinkNode extends ElementNode
 {
-    private const string TYPE = 'link';
+    private const TYPE = 'link';
     private ?string $url;
     private ?string $title;
 

@@ -9,7 +9,7 @@ use Metarisc\LexicalParser\Renderer\RendererInterface;
 class TextNode implements NodeInterface
 {
     private string $text;
-    private const string TYPE = 'text';
+    private const TYPE        = 'text';
     private ?Style $style     = null;
 
     public function __construct(array $data)
